@@ -1,0 +1,15 @@
+{
+  "name": "PWA demo",
+  "short_name": "Demo",
+  "start_url": "index.html",
+  "icons": [
+    {
+      "src": "https://cdn-images.himalayas.app/3ys8opek7x5r2gcgt9a3zil28srs",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "background_color": "#3E4EB8",
+  "display": "standalone",
+  "theme_color": "#2E3AA1"
+}
