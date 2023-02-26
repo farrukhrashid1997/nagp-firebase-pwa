@@ -1,7 +1,6 @@
 import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -13,15 +12,14 @@ import { db } from "../../firebaseConfig";
 import { Button } from "@mui/material";
 import { getAuth } from "firebase/auth";
 import { useFormik } from "formik";
-import { useAppSelector } from "../../hooks/useAppSelector";
-import { userEmail } from "../../selectors/userSelector";
-import { Email } from "@mui/icons-material";
+import { TimesheetStatus } from "../../helpers/Constants";
+import { DateTime } from "luxon";
 
 export default function FillTimesheet() {
   const formik = useFormik({
     initialValues: {
-      start: new Date(),
-      end: new Date(),
+      start: DateTime.now(),
+      end: DateTime.now(),
       type: "",
       description: "",
     },
@@ -31,6 +29,9 @@ export default function FillTimesheet() {
       const newTimesheetRef = push(timesheetRef);
       set(newTimesheetRef, {
         ...val,
+        start: val.start.toString(),
+        end: val.end.toString(),
+        status: TimesheetStatus.pending,
       });
     },
   });
@@ -53,13 +54,15 @@ export default function FillTimesheet() {
         <Typography component="h1" variant="h5">
           Fill Timesheet
         </Typography>
-        <Box noValidate component="div" sx={{ mt: 3 }}>
+        <Box component="div" sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TimePicker
                 label="Start Time"
                 value={formik.values.start}
-                onChange={(date) => formik.setFieldValue("start", date)}
+                onChange={(date) => {
+                  formik.setFieldValue("start", date);
+                }}
                 renderInput={(params) => <TextField {...params} />}
               />
             </Grid>

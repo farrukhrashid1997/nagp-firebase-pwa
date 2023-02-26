@@ -11,13 +11,24 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import NagarroLogo from "../../assets/nagarro.png";
+import { useNavigate } from "react-router-dom";
 
-const pages = ["Fill Timesheet", "View Timesheet"];
 const settings = ["Profile", "Logout"];
 
 function ResponsiveAppBar() {
+  const navigate = useNavigate();
+  const pages = [
+    {
+      name: "Fill Timesheet",
+      onClick: () => navigate("/"),
+    },
+    {
+      name: "View Timesheet",
+    onClick: () => navigate("/viewTimesheet"),
+    },
+  ];
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -90,8 +101,11 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page.name} onClick={() => {
+                    page.onClick();
+                    handleCloseNavMenu();
+                }}>
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -120,11 +134,14 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
+                key={page.name}
+                onClick={() => {
+                    page.onClick();
+                    handleCloseNavMenu();
+                }}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
-                {page}
+                {page.name}
               </Button>
             ))}
           </Box>
