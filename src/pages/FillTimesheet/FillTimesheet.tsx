@@ -1,32 +1,46 @@
 import * as React from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { set, ref, push } from "firebase/database";
 import CustomTextField from "../../components/common/CustomTextField";
 import { TimePicker } from "@mui/x-date-pickers";
+import { db } from "../../firebaseConfig";
+import { Button } from "@mui/material";
+import { getAuth } from "firebase/auth";
+import { useFormik } from "formik";
+import { useAppSelector } from "../../hooks/useAppSelector";
+import { userEmail } from "../../selectors/userSelector";
+import { Email } from "@mui/icons-material";
 
 export default function FillTimesheet() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
+  const formik = useFormik({
+    initialValues: {
+      start: new Date(),
+      end: new Date(),
+      type: "",
+      description: "",
+    },
+    onSubmit: (val) => {
+      const auth = getAuth();
+      const timesheetRef = ref(db, `timesheet/${auth.currentUser?.uid}`);
+      const newTimesheetRef = push(timesheetRef);
+      set(newTimesheetRef, {
+        ...val,
+      });
+    },
+  });
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container
+      component="main"
+      maxWidth="xs"
+      sx={{ height: "100%", display: "flex", alignItems: "center" }}
+    >
       <CssBaseline />
       <Box
         sx={{
@@ -39,37 +53,51 @@ export default function FillTimesheet() {
         <Typography component="h1" variant="h5">
           Fill Timesheet
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box noValidate component="div" sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TimePicker
                 label="Start Time"
-                onChange={() => {}}
+                value={formik.values.start}
+                onChange={(date) => formik.setFieldValue("start", date)}
                 renderInput={(params) => <TextField {...params} />}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TimePicker
                 label="End Time"
-                onChange={() => {}}
+                value={formik.values.end}
+                onChange={(date) => formik.setFieldValue("end", date)}
                 renderInput={(params) => <TextField {...params} />}
               />
             </Grid>
             <Grid item xs={12}>
-              <CustomTextField required fullWidth label="Type of timesheet" name="type" />
+              <CustomTextField
+                required
+                fullWidth
+                label="Type of timesheet"
+                name="type"
+                onChange={(ev) => formik.handleChange(ev)}
+              />
             </Grid>
             <Grid item xs={12}>
               <CustomTextField
                 required
                 fullWidth
                 minRows={5}
+                onChange={(ev) => formik.handleChange(ev)}
                 multiline
                 name="description"
                 label="Description"
               />
             </Grid>
           </Grid>
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={() => formik.handleSubmit()}
+          >
             Submit Timesheet
           </Button>
         </Box>

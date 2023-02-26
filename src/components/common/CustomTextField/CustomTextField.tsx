@@ -6,6 +6,7 @@ interface ICustomTextField {
   label: string;
   required: boolean;
   fullWidth: boolean;
+  onChange: (event: React.ChangeEvent) => void;
   autoComplete?: string;
   autoFocus?: boolean;
   type?: string;
@@ -23,6 +24,7 @@ function CustomTextField({
   minRows,
   multiline,
   type,
+  onChange,
 }: ICustomTextField) {
   return (
     <TextField
@@ -34,6 +36,7 @@ function CustomTextField({
       fullWidth={fullWidth}
       minRows={minRows}
       label={label}
+      onChange={onChange}
       autoComplete={autoComplete}
       autoFocus={autoFocus}
     />

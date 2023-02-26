@@ -5,16 +5,17 @@ import Signup from "./pages/Signup";
 import FillTimesheet from "./pages/FillTimesheet";
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { Route, Routes } from "react-router-dom";
+import store from "./store";
+import { Provider } from "react-redux";
+import AppRouter from "./AppRouter";
+import { db } from "./firebaseConfig";
 
 function App() {
-  const theme = createTheme();
-
   return (
-    <ThemeProvider theme={theme}>
-      <LocalizationProvider dateAdapter={AdapterLuxon}>
-        <FillTimesheet />
-      </LocalizationProvider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <AppRouter />
+    </Provider>
   );
 }
 

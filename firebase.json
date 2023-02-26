@@ -1,0 +1,9 @@
+{
+  "hosting": {
+    "site": "nagp2023-pwa-firebase",
+    "public": "public"
+  },
+  "database": {
+    "rules": "database.rules.json"
+  }
+}
