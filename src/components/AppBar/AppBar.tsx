@@ -13,21 +13,33 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import NagarroLogo from "../../assets/nagarro.png";
 import { useNavigate } from "react-router-dom";
+import { userType } from "../../selectors/userSelector";
+import { RoutesConfig, TypeOfEmployee } from "../../helpers/Constants";
+import { useAppSelector } from "../../hooks/useAppSelector";
 
 const settings = ["Profile", "Logout"];
 
 function ResponsiveAppBar() {
   const navigate = useNavigate();
-  const pages = [
-    {
-      name: "Fill Timesheet",
-      onClick: () => navigate("/"),
-    },
-    {
-      name: "View Timesheet",
-    onClick: () => navigate("/viewTimesheet"),
-    },
-  ];
+  const employeeType = useAppSelector(userType);
+  const pages =
+    employeeType === TypeOfEmployee.employee
+      ? [
+          {
+            name: "Fill Timesheet",
+            onClick: () => navigate("/"),
+          },
+          {
+            name: "View Timesheet",
+            onClick: () => navigate("/viewTimesheet"),
+          },
+        ]
+      : [
+          {
+            name: "View Timesheets",
+            onClick: () => navigate("/"),
+          },
+        ];
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -101,10 +113,13 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page.name} onClick={() => {
+                <MenuItem
+                  key={page.name}
+                  onClick={() => {
                     page.onClick();
                     handleCloseNavMenu();
-                }}>
+                  }}
+                >
                   <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
@@ -136,8 +151,8 @@ function ResponsiveAppBar() {
               <Button
                 key={page.name}
                 onClick={() => {
-                    page.onClick();
-                    handleCloseNavMenu();
+                  page.onClick();
+                  handleCloseNavMenu();
                 }}
                 sx={{ my: 2, color: "white", display: "block" }}
               >

@@ -1,21 +1,25 @@
-import { Box, Card, CardContent, Grid } from "@mui/material";
+import { Box, Button, Card, CardContent, Grid } from "@mui/material";
+import { ref, set } from "firebase/database";
 import { DateTime } from "luxon";
 import React from "react";
+import { db } from "../../firebaseConfig";
 import { TimesheetStatus } from "../../helpers/Constants";
 import InfoCard from "../common/InfoCard";
 
-export default function TimesheetCard({
+export default function ManagerTimesheet({
   description,
   start,
   end,
   type,
-  status,
+  userIdPath,
+  currentStatus,
 }: {
   description: string;
   start: string;
   end: string;
+  currentStatus: string;
   type: string;
-  status: string;
+  userIdPath: string;
 }) {
   const dtStart = DateTime.fromISO(start);
   const dtEnd = DateTime.fromISO(end);
@@ -31,6 +35,17 @@ export default function TimesheetCard({
       default:
         break;
     }
+  };
+
+  const updateStatus = (status: `${TimesheetStatus}`) => {
+    const timesheetRef = ref(db, `timesheet/${userIdPath}`);
+    set(timesheetRef, {
+      start: start,
+      end: end,
+      description: description,
+      type: type,
+      status,
+    });
   };
 
   return (
@@ -57,15 +72,34 @@ export default function TimesheetCard({
                 flexDirection: "column",
                 marginTop: 2,
                 padding: 1,
-                backgroundColor: getStatusColor(status as `${TimesheetStatus}`),
+                backgroundColor: getStatusColor(currentStatus as `${TimesheetStatus}`),
                 maxWidth: 100,
                 alignItems: "center",
                 borderRadius: 2,
+                marginBottom: 2,
                 color: "white",
               }}
             >
-              {status}
+              {currentStatus}
             </Box>
+          </Grid>
+          <Grid xs={6}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => updateStatus(TimesheetStatus.approved)}
+            >
+              Approve
+            </Button>
+          </Grid>
+          <Grid xs={6} justifyContent="flex-end" display="flex">
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => updateStatus(TimesheetStatus.rejected)}
+            >
+              Reject
+            </Button>
           </Grid>
         </Grid>
       </CardContent>

@@ -20,6 +20,8 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CustomTextField from "../../components/common/CustomTextField";
 import { useFormik } from "formik";
+import { db } from "../../firebaseConfig";
+import { ref, set } from "firebase/database";
 
 export default function SignUp() {
   const auth = getAuth();
@@ -34,7 +36,11 @@ export default function SignUp() {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        console.log(user);
+        const timesheetRef = ref(db, `users/${user.uid}`);
+        set(timesheetRef, {
+          email: user.email,
+          type: "Employee",
+        });
         // ...
       })
       .catch((error) => {

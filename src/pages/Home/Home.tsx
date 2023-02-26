@@ -2,11 +2,16 @@ import React from "react";
 import { Box, Grid } from "@mui/material";
 import { Route, Routes } from "react-router-dom";
 import FillTimesheet from "../FillTimesheet";
+import ViewTimesheetManager from "../ViewTimesheetManager";
+
 import ResponsiveAppBar from "../../components/AppBar";
 import ViewTimesheet from "../ViewTimesheet";
-import { RoutesConfig } from "../../helpers/Constants";
+import { RoutesConfig, TypeOfEmployee } from "../../helpers/Constants";
+import { useAppSelector } from "../../hooks/useAppSelector";
+import { userType } from "../../selectors/userSelector";
 
 export default function Home() {
+  const employeeType = useAppSelector(userType);
   return (
     <Box
       component="div"
@@ -21,10 +26,16 @@ export default function Home() {
         <ResponsiveAppBar />
       </Box>
       <Box sx={{ height: "80%", paddingTop: 10 }}>
-        <Routes>
-          <Route path={RoutesConfig.fillTimesheet} element={<FillTimesheet />} />
-          <Route path={RoutesConfig.viewTimesheet} element={<ViewTimesheet />} />
-        </Routes>
+        {employeeType === TypeOfEmployee.employee ? (
+          <Routes>
+            <Route path={RoutesConfig.fillTimesheet} element={<FillTimesheet />} />
+            <Route path={RoutesConfig.viewTimesheet} element={<ViewTimesheet />} />
+          </Routes>
+        ) : (
+          <Routes>
+            <Route path={RoutesConfig.fillTimesheetManager} element={<ViewTimesheetManager />} />
+          </Routes>
+        )}
       </Box>
     </Box>
   );

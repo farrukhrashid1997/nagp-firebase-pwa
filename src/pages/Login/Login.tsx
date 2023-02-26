@@ -14,6 +14,8 @@ import { loginUser } from "../../actions/userActions";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { getIsUserLoggedIn } from "../../selectors/userSelector";
 import { useNavigate } from "react-router-dom";
+import { onValue, ref } from "firebase/database";
+import { db } from "../../firebaseConfig";
 
 export default function SignIn() {
   const auth = getAuth();
@@ -30,7 +32,11 @@ export default function SignIn() {
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          user.email && dispatch(loginUser({ email: user.email }));
+          const userRef = ref(db, "users/" + user.uid);
+          onValue(userRef, (snapshot) => {
+            const data = snapshot.val();
+            user.email && dispatch(loginUser({ email: user.email, type: data.type }));
+          });
         })
         .catch((err) => console.log(err.message));
     },

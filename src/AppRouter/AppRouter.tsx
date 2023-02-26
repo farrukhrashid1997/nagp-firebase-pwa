@@ -7,6 +7,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import { useAppSelector } from "../hooks/useAppSelector";
 import { getIsUserLoggedIn } from "../selectors/userSelector";
 import Home from "../pages/Home";
+import Signup from "../pages/Signup";
 
 function AppRouter() {
   const theme = createTheme();
@@ -17,6 +18,7 @@ function AppRouter() {
       <LocalizationProvider dateAdapter={AdapterLuxon}>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route
             path="*"
             element={
