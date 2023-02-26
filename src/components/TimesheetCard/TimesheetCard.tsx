@@ -1,6 +1,7 @@
 import { Box, Card, CardContent, Grid } from "@mui/material";
 import { DateTime } from "luxon";
 import React from "react";
+import { TimesheetStatus } from "../../helpers/Constants";
 import InfoCard from "./InfoCard";
 
 export default function TimesheetCard({
@@ -18,6 +19,19 @@ export default function TimesheetCard({
 }) {
   const dtStart = DateTime.fromISO(start);
   const dtEnd = DateTime.fromISO(end);
+
+  const getStatusColor = (status: `${TimesheetStatus}`) => {
+    switch (status) {
+      case TimesheetStatus.pending:
+        return "grey";
+      case TimesheetStatus.approved:
+        return "green";
+      case TimesheetStatus.rejected:
+        return "red";
+      default:
+        break;
+    }
+  };
 
   return (
     <Card variant="outlined" sx={{ width: "100%" }}>
@@ -43,7 +57,7 @@ export default function TimesheetCard({
                 flexDirection: "column",
                 marginTop: 2,
                 padding: 1,
-                backgroundColor: "red",
+                backgroundColor: getStatusColor(status),
                 maxWidth: 100,
                 alignItems: "center",
                 borderRadius: 2,
