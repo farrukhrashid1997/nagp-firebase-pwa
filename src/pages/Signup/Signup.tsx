@@ -22,9 +22,11 @@ import CustomTextField from "../../components/common/CustomTextField";
 import { useFormik } from "formik";
 import { db } from "../../firebaseConfig";
 import { ref, set } from "firebase/database";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
   const auth = getAuth();
+  const navigate = useNavigate();
   const provider = new GoogleAuthProvider();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -145,7 +147,7 @@ export default function SignUp() {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="#" variant="body2" onClick={() => navigate("/login")}>
                 Already have an account? Sign in
               </Link>
             </Grid>
